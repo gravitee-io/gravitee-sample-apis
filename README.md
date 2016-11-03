@@ -1,2 +1,3 @@
-# gravitee-test-apis
-Some apis used to tests Gravitee.io
+# Gravitee.io Sample APIs
+
+Some apis used to play with Gravitee.io
