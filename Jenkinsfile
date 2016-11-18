@@ -6,7 +6,7 @@ node {
         withEnv(["PATH+MAVEN=${mvnHome}/bin",
                  "M2_HOME=${mvnHome}",
                  "JAVA_HOME=${javaHome}"]) {
-            def dirs = ["gravitee-echo-api", "gravitee-whoami-api"]
+            def dirs = ["gravitee-echo-api", "gravitee-whoami-api", "gravitee-whattimeisit-api"]
             for( int i = 0; i < dirs.size(); i++){
                 dir(dirs[i]) {
                     sh "mvn clean package"
