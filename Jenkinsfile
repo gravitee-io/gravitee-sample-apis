@@ -1,6 +1,12 @@
 node {
     stage("Build") {
         checkout scm
+
+        dir("gravitee-sample-index") {
+            sh "docker build -t graviteeio/gravitee-sample-index:latest --pull=true ."
+            sh "docker push graviteeio/gravitee-sample-index:latest"
+        }
+
         def mvnHome = tool 'MVN33'
         def javaHome = tool 'JDK 8'
         withEnv(["PATH+MAVEN=${mvnHome}/bin",
