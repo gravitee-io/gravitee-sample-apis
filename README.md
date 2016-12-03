@@ -1,6 +1,6 @@
 # Gravitee.io Sample APIs
 
-Some apis used to play with Gravitee.io
+Some apis to play with Gravitee.io
 
 
 * [gravitee-echo-api](./gravitee-echo-api/README.md)
