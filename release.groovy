@@ -21,7 +21,7 @@ node {
                          "JAVA_HOME=${javaHome}"]) {
                     dir(api) {
                         sh "mvn -B versions:set -DnewVersion=${releaseVersion} -DgenerateBackupPoms=false"
-                        sh "mvn -B -U -P gravitee-release clean install"
+                        sh "mvn -B -U -P gravitee-release clean deploy"
 
                         //hack
                         sh "rm -f target/*-sources.jar"
@@ -32,9 +32,9 @@ node {
                         sh "git commit -m 'release(${releaseVersion})'"
                         sh "git tag ${releaseVersion}"
 
-                        //sh "git push --tags origin master"
-                        //sh "docker push graviteeio/${api}:latest"
-                        //sh "docker push graviteeio/${api}:${releaseVersion}"
+                        sh "git push --tags origin master"
+                        sh "docker push graviteeio/${api}:latest"
+                        sh "docker push graviteeio/${api}:${releaseVersion}"
                     }
                 }
             }
