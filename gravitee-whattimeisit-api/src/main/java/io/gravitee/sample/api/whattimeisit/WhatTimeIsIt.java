@@ -51,6 +51,15 @@ public class WhatTimeIsIt {
                     .end(content.encodePrettily());
         });
 
-        server.requestHandler(router::accept).listen(8080);
+        int port = 8080;
+        if (args.length > 0) {
+            try{
+                port = Integer.parseInt(args[0]);
+            } catch (Exception e) {
+                System.err.println("Usage: java -jar gravitee-whattimeisit-api-VERSION.jar <port>");
+            }
+        }
+        server.requestHandler(router::accept).listen(port);
+        System.out.println("Server listening on port " + port);
     }
 }

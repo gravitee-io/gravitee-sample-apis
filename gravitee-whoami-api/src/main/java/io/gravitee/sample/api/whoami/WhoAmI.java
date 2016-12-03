@@ -36,6 +36,16 @@ import java.util.Collections;
  */
 public class WhoAmI {
     public static void main(String[] args) {
+
+        int listeningPort = 8080;
+        if (args.length > 0) {
+            try{
+                listeningPort = Integer.parseInt(args[0]);
+            } catch (Exception e) {
+                System.err.println("Usage: java -jar gravitee-whoami-api-VERSION.jar <port>");
+            }
+        }
+        final int port = listeningPort;
         Vertx vertx = Vertx.vertx();
         HttpServer server = vertx.createHttpServer();
         Router router = Router.router(vertx);
@@ -43,6 +53,8 @@ public class WhoAmI {
         Route get = router.route().method(HttpMethod.GET).produces("application/json");
         get.handler(routingContext -> {
             JsonObject content = new JsonObject();
+
+            content.put("port", port);
 
             int statusCode = routingContext.request().getParam("statusCode") == null
                     ? 200
@@ -84,15 +96,15 @@ public class WhoAmI {
                 e.printStackTrace();
             }
 
-            //system properties
-            JsonObject systemProperties = new JsonObject();
-            System.getProperties().entrySet().forEach(property -> systemProperties.put(property.getKey().toString(), property.getValue()));
-            content.put("systemProperties", systemProperties);
-
-            //system env
-            JsonObject systemEnv = new JsonObject();
-            System.getenv().entrySet().forEach(env -> systemEnv.put(env.getKey(), env.getValue()));
-            content.put("systemEnv", systemEnv);
+//            //system properties
+//            JsonObject systemProperties = new JsonObject();
+//            System.getProperties().entrySet().forEach(property -> systemProperties.put(property.getKey().toString(), property.getValue()));
+//            content.put("systemProperties", systemProperties);
+//
+//            //system env
+//            JsonObject systemEnv = new JsonObject();
+//            System.getenv().entrySet().forEach(env -> systemEnv.put(env.getKey(), env.getValue()));
+//            content.put("systemEnv", systemEnv);
 
             //response
             HttpServerResponse response = routingContext.response();
@@ -101,6 +113,7 @@ public class WhoAmI {
                     .end(content.encodePrettily()));
         });
 
-        server.requestHandler(router::accept).listen(8080);
+        server.requestHandler(router::accept).listen(port);
+        System.out.println("Server listening on port " + port);
     }
 }
