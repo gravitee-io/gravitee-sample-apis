@@ -55,8 +55,6 @@ $ curl -v -H "my-key: my value" "http://localhost:8080?statusCode=201"
 $ curl -v -X POST -H "my-key: my value" -H "Content-Type: application/json" -d '{ "json-body": "json value" }' "http://localhost:8080?statusCode=201"
    
 < HTTP/1.1 201 Created
-< Transfer-Encoding: chunked
-< Host: localhost:8080
 < User-Agent: curl/7.43.0
 < Accept: */*
 < my-key: my value

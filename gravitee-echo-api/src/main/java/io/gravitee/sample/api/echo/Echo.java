@@ -20,22 +20,16 @@ import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
-import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import io.vertx.core.streams.Pump;
 import io.vertx.ext.web.Route;
 import io.vertx.ext.web.Router;
-import io.vertx.ext.web.handler.BodyHandler;
-
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.Collections;
 
 /**
  * @author Nicolas GERAUD (nicolas at graviteesource.com)
  * @author GraviteeSource Team
  */
 public class Echo {
+
     public static void main(String[] args) {
         Vertx vertx = Vertx.vertx();
         HttpServer server = vertx.createHttpServer();
@@ -70,10 +64,11 @@ public class Echo {
                     : Integer.valueOf(request.getParam("statusCode"));
 
             response.setStatusCode(statusCode);
-            response.setChunked(true);
-            response.headersEndHandler(aVoid -> request.headers().entries().stream()
-                    .filter( entry -> !"content-length".equals(entry.getKey()) )
-                    .forEach( entry -> response.putHeader(entry.getKey(), entry.getValue()) ));
+
+            request.headers().entries().stream()
+                    .filter( entry -> !"host".equalsIgnoreCase(entry.getKey()) )
+                    .forEach( entry -> response.putHeader(entry.getKey(), entry.getValue()) );
+
             request.handler(response::write);
             request.endHandler(aVoid -> response.end());
         });
