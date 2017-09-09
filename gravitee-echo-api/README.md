@@ -8,7 +8,7 @@
 
 ## How to use
 
-`GET` Return headers as response content in JSON.
+`GET` Return headers as response content in JSON and que parameters list.
 * query params:
   * `statusCode`: the return status code. Default `200`
   
@@ -19,7 +19,7 @@
   
 ## Samples
 ```
-$ curl -v "http://localhost:8080/"
+$ curl -v "http://localhost:8080/?q=foo"
 
 < HTTP/1.1 200 OK
 < content-type: application/json
@@ -30,6 +30,9 @@ $ curl -v "http://localhost:8080/"
     "Host" : "localhost:8080",
     "User-Agent" : "curl/7.43.0",
     "Accept" : "*/*"
+  },
+  "query_params" : {
+    "q": "foo"
   }
 }
 ```

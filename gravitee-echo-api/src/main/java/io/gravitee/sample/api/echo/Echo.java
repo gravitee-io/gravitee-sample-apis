@@ -15,14 +15,18 @@
  */
 package io.gravitee.sample.api.echo;
 
+import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Route;
 import io.vertx.ext.web.Router;
+
+import java.util.*;
 
 /**
  * @author Nicolas GERAUD (nicolas at graviteesource.com)
@@ -47,6 +51,22 @@ public class Echo {
             routingContext.request().headers().forEach(entry -> headers.put(entry.getKey(), entry.getValue()));
             content.put("headers", headers);
 
+            //query params
+            JsonObject queryParams = new JsonObject();
+            for (Map.Entry<String, String> entry : routingContext.request().params().entries()) {
+                if (queryParams.containsKey(entry.getKey())) {
+                    if (queryParams.getValue(entry.getKey()) instanceof String) {
+                        //transform String to List
+                        List<Object> values = new ArrayList<>();
+                        values.add(queryParams.getValue(entry.getKey()));
+                        queryParams.put(entry.getKey(), values);
+                    }
+                    ((JsonArray) queryParams.getValue(entry.getKey())).add(entry.getValue());
+                } else {
+                    queryParams.put(entry.getKey(), entry.getValue());
+                }
+            }
+            content.put("query_params", queryParams);
             //response
             routingContext.response()
                     .putHeader("content-type", "application/json")
