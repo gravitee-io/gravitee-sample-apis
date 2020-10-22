@@ -15,15 +15,13 @@
  */
 package io.gravitee.sample.api.echo;
 
-import io.vertx.core.Vertx;
+import io.vertx.core.Handler;
 import io.vertx.core.http.HttpMethod;
-import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import io.vertx.ext.web.Route;
-import io.vertx.ext.web.Router;
+import io.vertx.ext.web.RoutingContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,15 +31,11 @@ import java.util.Map;
  * @author Nicolas GERAUD (nicolas at graviteesource.com)
  * @author GraviteeSource Team
  */
-public class Echo {
+public class EchoHandler implements Handler<RoutingContext> {
 
-    public static void main(String[] args) {
-        Vertx vertx = Vertx.vertx();
-        HttpServer server = vertx.createHttpServer();
-        Router router = Router.router(vertx);
-
-        Route get = router.route().method(HttpMethod.GET).produces("application/json");
-        get.handler(routingContext -> {
+    @Override
+    public void handle(RoutingContext routingContext) {
+        if (HttpMethod.GET.equals(routingContext.request().method())) {
             JsonObject content = new JsonObject();
 
             //headers
@@ -73,10 +67,7 @@ public class Echo {
                     .putHeader("content-type", "application/json")
                     .setStatusCode(statusCode)
                     .end(content.encodePrettily());
-        });
-
-        Route post = router.route().method(HttpMethod.POST);
-        post.handler(routingContext -> {
+        } else {
             HttpServerRequest request = routingContext.request();
             HttpServerResponse response = routingContext.response();
 
@@ -92,17 +83,6 @@ public class Echo {
 
             request.handler(response::write);
             request.endHandler(aVoid -> response.end());
-        });
-
-        int port = 8080;
-        if (args.length > 0) {
-            try{
-                port = Integer.parseInt(args[0]);
-            } catch (Exception e) {
-                System.err.println("Usage: java -jar gravitee-echo-api-VERSION.jar <port>");
-            }
         }
-        server.requestHandler(router::accept).listen(port);
-        System.out.println("Server listening on port " + port);
     }
 }

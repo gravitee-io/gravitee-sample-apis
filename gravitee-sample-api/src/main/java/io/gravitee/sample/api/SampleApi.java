@@ -13,53 +13,57 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.gravitee.sample.api.whattimeisit;
+package io.gravitee.sample.api;
 
+import io.gravitee.sample.api.echo.EchoHandler;
+import io.gravitee.sample.api.whattimeisit.WhatTimeIsItHandler;
+import io.gravitee.sample.api.whoami.WhoAmIHandler;
 import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServer;
-import io.vertx.core.http.HttpServerResponse;
-import io.vertx.core.json.JsonObject;
-import io.vertx.ext.web.Route;
 import io.vertx.ext.web.Router;
+import io.vertx.ext.web.handler.StaticHandler;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import static io.vertx.core.http.HttpMethod.GET;
+import static io.vertx.core.http.HttpMethod.POST;
 
 /**
  * @author Nicolas GERAUD (nicolas at graviteesource.com)
  * @author GraviteeSource Team
  */
-public class WhatTimeIsIt {
+public class SampleApi {
+
     public static void main(String[] args) {
         Vertx vertx = Vertx.vertx();
         HttpServer server = vertx.createHttpServer();
         Router router = Router.router(vertx);
 
-        Route get = router.route().method(HttpMethod.GET).produces("application/json");
-        get.handler(routingContext -> {
-            JsonObject content = new JsonObject();
+        router.route().handler(StaticHandler.create());
 
-            Date now = new Date();
-            content.put("timestamp", now.getTime());
-            content.put("date", new SimpleDateFormat("dd/MM/yyyy HH:mm:ss.SSS").format(now));
+        router.route("/echo")
+                .method(GET)
+                .method(POST)
+                .produces("application/json")
+                .handler(new EchoHandler());
 
-            //response
-            HttpServerResponse response = routingContext.response();
-            response.putHeader("content-type", "application/json")
-                    .setStatusCode(200)
-                    .end(content.encodePrettily());
-        });
+        router.route("/whoami")
+                .method(GET)
+                .produces("application/json")
+                .handler(new WhoAmIHandler());
+
+        router.route("/whattimeisit")
+                .method(GET)
+                .produces("application/json")
+                .handler(new WhatTimeIsItHandler());
 
         int port = 8080;
         if (args.length > 0) {
             try{
                 port = Integer.parseInt(args[0]);
             } catch (Exception e) {
-                System.err.println("Usage: java -jar gravitee-whattimeisit-api-VERSION.jar <port>");
+                System.err.println("Usage: java -jar gravitee-sample-api-VERSION.jar <port>");
             }
         }
-        server.requestHandler(router::accept).listen(port);
+        server.requestHandler(router).listen(port);
         System.out.println("Server listening on port " + port);
     }
 }
