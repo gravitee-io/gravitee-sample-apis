@@ -42,11 +42,13 @@
   },
   "services": {},
   "resources": [],
-  "members": [
+  "pages": [],
+  "plans": [
     {
-      "username": "admin",
-      "type": "PRIMARY_OWNER"
+      "name": "Free",
+      "description": "Test Plan",
+      "security": "KEY_LESS",
+      "status": "PUBLISHED"
     }
-  ],
-  "pages": []
+  ]
 }
