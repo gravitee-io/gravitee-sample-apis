@@ -40,8 +40,15 @@
   "plans": [
     {
       "name": "Free",
-      "description": "Test Plan",
+      "description": "Limited",
       "security": "KEY_LESS",
+      "status": "PUBLISHED"
+    },
+    {
+      "name": "Gold",
+      "description": "Unlimited",
+      "validation": "AUTO",
+      "security": "API_KEY",
       "status": "PUBLISHED"
     }
   ]
