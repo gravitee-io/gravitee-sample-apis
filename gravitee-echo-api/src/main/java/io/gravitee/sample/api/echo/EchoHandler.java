@@ -34,21 +34,28 @@ import java.util.Map;
 public class EchoHandler implements Handler<RoutingContext> {
 
     @Override
-    public void handle(RoutingContext routingContext) {
-        if (HttpMethod.GET.equals(routingContext.request().method())) {
+    public void handle(final RoutingContext routingContext) {
+        final HttpServerRequest request = routingContext.request();
+        final HttpServerResponse response = routingContext.response();
+        int statusCode = 200;
+        if (request.getParam("statusCode") != null) {
+            try {
+                statusCode = Integer.parseInt(request.getParam("statusCode"));
+            } catch (NumberFormatException e) {
+                // NaN so we do nothing
+            }
+        }
+        if (HttpMethod.GET.equals(request.method())) {
             JsonObject content = new JsonObject();
 
             //headers
             JsonObject headers = new JsonObject();
-            int statusCode = routingContext.request().getParam("statusCode") == null
-                    ? 200
-                    : Integer.valueOf(routingContext.request().getParam("statusCode"));
-            routingContext.request().headers().forEach(entry -> headers.put(entry.getKey(), entry.getValue()));
+            request.headers().forEach(entry -> headers.put(entry.getKey(), entry.getValue()));
             content.put("headers", headers);
 
             //query params
             JsonObject queryParams = new JsonObject();
-            for (Map.Entry<String, String> entry : routingContext.request().params().entries()) {
+            for (Map.Entry<String, String> entry : request.params().entries()) {
                 if (queryParams.containsKey(entry.getKey())) {
                     if (queryParams.getValue(entry.getKey()) instanceof String) {
                         //transform String to List
@@ -68,13 +75,6 @@ public class EchoHandler implements Handler<RoutingContext> {
                     .setStatusCode(statusCode)
                     .end(content.encodePrettily());
         } else {
-            HttpServerRequest request = routingContext.request();
-            HttpServerResponse response = routingContext.response();
-
-            int statusCode = request.getParam("statusCode") == null
-                    ? 200
-                    : Integer.valueOf(request.getParam("statusCode"));
-
             response.setStatusCode(statusCode);
 
             request.headers().entries().stream()
