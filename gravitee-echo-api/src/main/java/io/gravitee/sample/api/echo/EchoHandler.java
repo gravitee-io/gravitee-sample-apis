@@ -23,7 +23,6 @@ import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -75,19 +74,21 @@ public class EchoHandler implements Handler<RoutingContext> {
             }
             content.put("query_params", queryParams);
             //response
-            routingContext.response()
-                    .putHeader("content-type", "application/json")
-                    .setStatusCode(statusCode)
-                    .setStatusMessage(statusMessage)
-                    .end(content.encodePrettily());
+            routingContext
+                .response()
+                .putHeader("content-type", "application/json")
+                .setStatusCode(statusCode)
+                .setStatusMessage(statusMessage)
+                .end(content.encodePrettily());
         } else {
-            response
-                    .setStatusCode(statusCode)
-                    .setStatusMessage(statusMessage);
+            response.setStatusCode(statusCode).setStatusMessage(statusMessage);
 
-            request.headers().entries().stream()
-                    .filter( entry -> !"host".equalsIgnoreCase(entry.getKey()) )
-                    .forEach( entry -> response.putHeader(entry.getKey(), entry.getValue()) );
+            request
+                .headers()
+                .entries()
+                .stream()
+                .filter(entry -> !"host".equalsIgnoreCase(entry.getKey()))
+                .forEach(entry -> response.putHeader(entry.getKey(), entry.getValue()));
 
             request.handler(response::write);
             request.endHandler(aVoid -> response.end());

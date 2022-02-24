@@ -19,7 +19,6 @@ import io.vertx.core.Handler;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -39,8 +38,6 @@ public class WhatTimeIsItHandler implements Handler<RoutingContext> {
 
         //response
         HttpServerResponse response = routingContext.response();
-        response.putHeader("content-type", "application/json")
-                .setStatusCode(200)
-                .end(content.encodePrettily());
+        response.putHeader("content-type", "application/json").setStatusCode(200).end(content.encodePrettily());
     }
 }
