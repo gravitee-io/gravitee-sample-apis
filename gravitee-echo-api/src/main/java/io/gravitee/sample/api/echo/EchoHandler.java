@@ -15,6 +15,7 @@
  */
 package io.gravitee.sample.api.echo;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServerRequest;
@@ -37,13 +38,17 @@ public class EchoHandler implements Handler<RoutingContext> {
     public void handle(final RoutingContext routingContext) {
         final HttpServerRequest request = routingContext.request();
         final HttpServerResponse response = routingContext.response();
-        int statusCode = 200;
+        int statusCode = HttpResponseStatus.OK.code();
+        String statusMessage = HttpResponseStatus.OK.reasonPhrase();
         if (request.getParam("statusCode") != null) {
             try {
                 statusCode = Integer.parseInt(request.getParam("statusCode"));
             } catch (NumberFormatException e) {
                 // NaN so we do nothing
             }
+        }
+        if (request.getParam("statusMessage") != null) {
+            statusMessage = request.getParam("statusMessage");
         }
         if (HttpMethod.GET.equals(request.method())) {
             JsonObject content = new JsonObject();
@@ -73,9 +78,12 @@ public class EchoHandler implements Handler<RoutingContext> {
             routingContext.response()
                     .putHeader("content-type", "application/json")
                     .setStatusCode(statusCode)
+                    .setStatusMessage(statusMessage)
                     .end(content.encodePrettily());
         } else {
-            response.setStatusCode(statusCode);
+            response
+                    .setStatusCode(statusCode)
+                    .setStatusMessage(statusMessage);
 
             request.headers().entries().stream()
                     .filter( entry -> !"host".equalsIgnoreCase(entry.getKey()) )

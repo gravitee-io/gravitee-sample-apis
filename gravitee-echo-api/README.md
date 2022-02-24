@@ -11,12 +11,14 @@
 `GET` Return headers as response content in JSON and que parameters list.
 * query params:
   * `statusCode`: the return status code. Default `200`
+  * `statusMessage`: the return status message. Default `OK`
   
   
 `POST` Return posted headers in response headers, same thing, with body 
 * query params:
   * `statusCode`: the return status code. Default `200`
-  
+  * `statusMessage`: the return status message. Default `OK`
+
 ## Samples
 ```
 $ curl -v "http://localhost:8080/?q=foo"
@@ -55,9 +57,9 @@ $ curl -v -H "my-key: my value" "http://localhost:8080?statusCode=201"
 ```
 
 ```
-$ curl -v -X POST -H "my-key: my value" -H "Content-Type: application/json" -d '{ "json-body": "json value" }' "http://localhost:8080?statusCode=201"
+$ curl -v -X POST -H "my-key: my value" -H "Content-Type: application/json" -d '{ "json-body": "json value" }' "http://localhost:8080?statusCode=201&statusMessage=Creation OK"
    
-< HTTP/1.1 201 Created
+< HTTP/1.1 201 Creation OK
 < User-Agent: curl/7.43.0
 < Accept: */*
 < my-key: my value
