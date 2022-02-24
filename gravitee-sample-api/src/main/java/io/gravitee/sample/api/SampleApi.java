@@ -15,6 +15,9 @@
  */
 package io.gravitee.sample.api;
 
+import static io.vertx.core.http.HttpMethod.GET;
+import static io.vertx.core.http.HttpMethod.POST;
+
 import io.gravitee.sample.api.echo.EchoHandler;
 import io.gravitee.sample.api.whattimeisit.WhatTimeIsItHandler;
 import io.gravitee.sample.api.whoami.WhoAmIHandler;
@@ -22,9 +25,6 @@ import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.StaticHandler;
-
-import static io.vertx.core.http.HttpMethod.GET;
-import static io.vertx.core.http.HttpMethod.POST;
 
 /**
  * @author Nicolas GERAUD (nicolas at graviteesource.com)
@@ -39,25 +39,15 @@ public class SampleApi {
 
         router.route().handler(StaticHandler.create());
 
-        router.route("/echo")
-                .method(GET)
-                .method(POST)
-                .produces("application/json")
-                .handler(new EchoHandler());
+        router.route("/echo").method(GET).method(POST).produces("application/json").handler(new EchoHandler());
 
-        router.route("/whoami")
-                .method(GET)
-                .produces("application/json")
-                .handler(new WhoAmIHandler());
+        router.route("/whoami").method(GET).produces("application/json").handler(new WhoAmIHandler());
 
-        router.route("/whattimeisit")
-                .method(GET)
-                .produces("application/json")
-                .handler(new WhatTimeIsItHandler());
+        router.route("/whattimeisit").method(GET).produces("application/json").handler(new WhatTimeIsItHandler());
 
         int port = 8080;
         if (args.length > 0) {
-            try{
+            try {
                 port = Integer.parseInt(args[0]);
             } catch (Exception e) {
                 System.err.println("Usage: java -jar gravitee-sample-api-VERSION.jar <port>");
