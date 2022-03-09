@@ -42,6 +42,7 @@ public class EchoHandler implements Handler<RoutingContext> {
         if (request.getParam("statusCode") != null) {
             try {
                 statusCode = Integer.parseInt(request.getParam("statusCode"));
+                statusMessage = HttpResponseStatus.valueOf(statusCode).reasonPhrase();
             } catch (NumberFormatException e) {
                 // NaN so we do nothing
             }
