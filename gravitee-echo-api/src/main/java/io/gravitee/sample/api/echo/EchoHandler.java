@@ -55,7 +55,17 @@ public class EchoHandler implements Handler<RoutingContext> {
 
             //headers
             JsonObject headers = new JsonObject();
-            request.headers().forEach(entry -> headers.put(entry.getKey(), entry.getValue()));
+            request
+                .headers()
+                .entries()
+                .forEach(entry -> {
+                    String value = entry.getValue();
+                    if (headers.containsKey(entry.getKey())) {
+                        value = String.join(",", String.valueOf(headers.getValue(entry.getKey())), value);
+                    }
+                    headers.put(entry.getKey(), value);
+                });
+
             content.put("headers", headers);
 
             //query params
