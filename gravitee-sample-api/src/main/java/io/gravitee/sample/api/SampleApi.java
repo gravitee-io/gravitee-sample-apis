@@ -15,15 +15,7 @@
  */
 package io.gravitee.sample.api;
 
-import static io.vertx.core.http.HttpMethod.GET;
-import static io.vertx.core.http.HttpMethod.POST;
-
-import io.gravitee.sample.api.echo.EchoHandler;
-import io.gravitee.sample.api.whattimeisit.WhatTimeIsItHandler;
-import io.gravitee.sample.api.whoami.WhoAmIHandler;
-import io.vertx.core.*;
-import io.vertx.ext.web.Router;
-import io.vertx.ext.web.handler.StaticHandler;
+import io.vertx.core.AbstractVerticle;
 
 /**
  * @author Nicolas GERAUD (nicolas at graviteesource.com)
@@ -32,32 +24,8 @@ import io.vertx.ext.web.handler.StaticHandler;
 public class SampleApi extends AbstractVerticle {
 
     @Override
-    public void start(Promise<Void> startPromise) {
-        io.vertx.core.http.HttpServer server = vertx.createHttpServer();
-
-        Router router = Router.router(vertx);
-
-        router.route().handler(StaticHandler.create());
-        router.route("/echo").method(GET).method(POST).produces("application/json").handler(new EchoHandler());
-
-        router.route().path("/whoami").method(GET).produces("application/json").handler(new WhoAmIHandler());
-
-        router.route().path("/whattimeisit").method(GET).produces("application/json").handler(new WhatTimeIsItHandler());
-
-        int port = Integer.parseInt(System.getProperty("http.port", "8080"));
-
-        server
-            .requestHandler(router)
-            .listen(
-                port,
-                result -> {
-                    if (result.succeeded()) {
-                        System.out.println("Server listening on port " + port);
-                        startPromise.complete();
-                    } else {
-                        startPromise.fail(result.cause());
-                    }
-                }
-            );
+    public void start() {
+        vertx.deployVerticle(new HttpApi());
+        vertx.deployVerticle(new GrpcApi());
     }
 }
