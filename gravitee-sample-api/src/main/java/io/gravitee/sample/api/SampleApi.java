@@ -21,8 +21,7 @@ import static io.vertx.core.http.HttpMethod.POST;
 import io.gravitee.sample.api.echo.EchoHandler;
 import io.gravitee.sample.api.whattimeisit.WhatTimeIsItHandler;
 import io.gravitee.sample.api.whoami.WhoAmIHandler;
-import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpServer;
+import io.vertx.core.*;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.StaticHandler;
 
@@ -30,30 +29,35 @@ import io.vertx.ext.web.handler.StaticHandler;
  * @author Nicolas GERAUD (nicolas at graviteesource.com)
  * @author GraviteeSource Team
  */
-public class SampleApi {
+public class SampleApi extends AbstractVerticle {
 
-    public static void main(String[] args) {
-        Vertx vertx = Vertx.vertx();
-        HttpServer server = vertx.createHttpServer();
+    @Override
+    public void start(Promise<Void> startPromise) {
+        io.vertx.core.http.HttpServer server = vertx.createHttpServer();
+
         Router router = Router.router(vertx);
 
         router.route().handler(StaticHandler.create());
-
         router.route("/echo").method(GET).method(POST).produces("application/json").handler(new EchoHandler());
 
-        router.route("/whoami").method(GET).produces("application/json").handler(new WhoAmIHandler());
+        router.route().path("/whoami").method(GET).produces("application/json").handler(new WhoAmIHandler());
 
-        router.route("/whattimeisit").method(GET).produces("application/json").handler(new WhatTimeIsItHandler());
+        router.route().path("/whattimeisit").method(GET).produces("application/json").handler(new WhatTimeIsItHandler());
 
-        int port = 8080;
-        if (args.length > 0) {
-            try {
-                port = Integer.parseInt(args[0]);
-            } catch (Exception e) {
-                System.err.println("Usage: java -jar gravitee-sample-api-VERSION.jar <port>");
-            }
-        }
-        server.requestHandler(router).listen(port);
-        System.out.println("Server listening on port " + port);
+        int port = Integer.parseInt(System.getProperty("http.port", "8080"));
+
+        server
+            .requestHandler(router)
+            .listen(
+                port,
+                result -> {
+                    if (result.succeeded()) {
+                        System.out.println("Server listening on port " + port);
+                        startPromise.complete();
+                    } else {
+                        startPromise.fail(result.cause());
+                    }
+                }
+            );
     }
 }

@@ -33,6 +33,24 @@
     <name>Gravitee.io - Sample APIs</name>
     <packaging>pom</packaging>
 
+    <properties>
+        <!-- Vert.X version is mandatory for vertx-grpc-protoc-plugin in gravitee-gateway-standalone-container -->
+        <vertx.version>4.3.1</vertx.version>
+    </properties>
+
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-stack-depchain</artifactId>
+                <version>${vertx.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <modules>
         <module>gravitee-echo-api</module>
         <module>gravitee-whattimeisit-api</module>
@@ -44,7 +62,6 @@
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-web</artifactId>
-            <version>${vertx.version}</version>
         </dependency>
         <!-- Jackson dependencies -->
         <dependency>

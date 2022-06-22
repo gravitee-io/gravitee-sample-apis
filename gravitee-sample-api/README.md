@@ -2,9 +2,9 @@
 
 
 ## How to run
-`$ java -jar gravitee-whoami-api-VERSION.jar <port>`
+`$ java -jar gravitee-whoami-api-VERSION.jar -Dhttp.port=<port>`
 
-`port ` is optional. Default `8080`
+`http.port ` is optional. Default `8080`
 
 ## How to use
 
