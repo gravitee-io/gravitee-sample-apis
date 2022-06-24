@@ -21,6 +21,7 @@ import io.gravitee.gateway.grpc.manualflowcontrol.StreamingGreeterGrpc;
 import io.grpc.stub.StreamObserver;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
+import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.net.SocketAddress;
 import io.vertx.grpc.client.GrpcClient;
 import io.vertx.grpc.client.GrpcClientChannel;
@@ -30,9 +31,16 @@ public class HelloClient extends AbstractVerticle {
     @Override
     public void start(Promise<Void> startPromise) throws Exception {
         int port = Integer.parseInt(System.getProperty("grpc.port", "50051"));
+        String host = System.getProperty("grpc.host", "localhost");
+        Boolean ssl = Boolean.parseBoolean(System.getProperty("grpc.ssl", "false"));
         // Create the channel
-        GrpcClient client = GrpcClient.client(vertx);
-        GrpcClientChannel channel = new GrpcClientChannel(client, SocketAddress.inetSocketAddress(port, "localhost"));
+        HttpClientOptions httpClientOptions = new HttpClientOptions();
+        httpClientOptions.setSsl(ssl);
+        httpClientOptions.setTrustAll(ssl);
+        httpClientOptions.setUseAlpn(ssl);
+
+        GrpcClient client = GrpcClient.client(vertx, httpClientOptions);
+        GrpcClientChannel channel = new GrpcClientChannel(client, SocketAddress.inetSocketAddress(port, host));
         StreamingGreeterGrpc.StreamingGreeterStub stub = StreamingGreeterGrpc.newStub(channel);
 
         // Call the remote service
@@ -53,7 +61,7 @@ public class HelloClient extends AbstractVerticle {
             }
         );
 
-        System.out.println("Call on port: " + port);
+        System.out.println("Client call on " + host + ":" + port + "[ssl=" + ssl + "]");
 
         requestStreamObserver.onNext(HelloRequest.newBuilder().setName("Jean").build());
     }

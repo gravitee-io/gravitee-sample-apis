@@ -49,7 +49,7 @@ public class HttpApi extends AbstractVerticle {
                 port,
                 result -> {
                     if (result.succeeded()) {
-                        System.out.println("Server listening on port " + port);
+                        System.out.println("HTTP server listening on port " + port);
                         startPromise.complete();
                     } else {
                         startPromise.fail(result.cause());

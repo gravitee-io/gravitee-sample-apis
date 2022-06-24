@@ -26,11 +26,12 @@ public class GrpcApi extends AbstractVerticle {
     @Override
     public void start(Promise<Void> startPromise) throws Exception {
         int port = Integer.parseInt(System.getProperty("grpc.port", "50051"));
+        String host = System.getProperty("grpc.host", "localhost");
         HelloApi helloApi = new HelloApi();
-        VertxServer rpcServer = VertxServerBuilder.forAddress(vertx, "localhost", port).addService(helloApi.service()).build();
+        VertxServer rpcServer = VertxServerBuilder.forAddress(vertx, host, port).addService(helloApi.service()).build();
         rpcServer.start(result -> {
             if (result.succeeded()) {
-                System.out.println("Server listening on port " + port);
+                System.out.println("GRPC server listening on port " + host + ":" + port);
                 startPromise.complete();
             } else {
                 startPromise.fail(result.cause());
