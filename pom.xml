@@ -33,18 +33,37 @@
     <name>Gravitee.io - Sample APIs</name>
     <packaging>pom</packaging>
 
+    <properties>
+        <vertx.version>4.3.1</vertx.version>
+        <exec-maven-plugin.version>3.0.0</exec-maven-plugin.version>
+        <maven-shade-plugin.version>3.2.4</maven-shade-plugin.version>
+    </properties>
+
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-stack-depchain</artifactId>
+                <version>${vertx.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <modules>
         <module>gravitee-echo-api</module>
         <module>gravitee-whattimeisit-api</module>
         <module>gravitee-whoami-api</module>
         <module>gravitee-sample-api</module>
+        <module>gravitee-hello-api</module>
     </modules>
 
     <dependencies>
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-web</artifactId>
-            <version>${vertx.version}</version>
         </dependency>
         <!-- Jackson dependencies -->
         <dependency>

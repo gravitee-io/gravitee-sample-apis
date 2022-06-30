@@ -2,9 +2,10 @@
 
 
 ## How to run
-`$ java -jar gravitee-whoami-api-VERSION.jar <port>`
+`$ java -jar gravitee-sample-api-VERSION-fat.jar -Dhttp.port=<port> -Dgrpc.port=<port>`
 
-`port ` is optional. Default `8080`
+`http.port ` is optional. Default `8080`
+`http.port ` is optional. Default `50051`
 
 ## How to use
 
@@ -12,7 +13,10 @@
 * query params:
   * `statusCode`: the return status code. Default `200`
   * `latency`: the latency in ms you want to add. Default `1`
-  
+
+## How to run with nginx+SSL
+`$ docker-compose up -d`
+
 ## Samples
 ```
 $ curl -v "http://localhost:8080?statusCode=201&latency=1000"

@@ -1,0 +1,58 @@
+#
+# Copyright (C) 2015 The Gravitee team (http://gravitee.io)
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+version: '3.5'
+
+networks:
+  frontend:
+    name: frontend
+  storage:
+    name: storage
+
+volumes:
+  data-elasticsearch:
+  data-mongo:
+
+services:
+  nginx:
+    image: nginx:latest
+    restart: unless-stopped
+    ports:
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    secrets:
+      - nginx.cert
+      - nginx.key
+    networks:
+      - frontend
+
+  api:
+    build:
+      context: ./gravitee-sample-api
+      dockerfile: Dockerfile
+      args:
+        grpc_host: "0.0.0.0"
+        grpc_port: 50051
+    restart: unless-stopped
+    networks:
+      - frontend
+
+secrets:
+  nginx.cert:
+    file: ./nginx/cert/nginx.cert
+  nginx.key:
+    file: ./nginx/cert/nginx.key

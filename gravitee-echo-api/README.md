@@ -1,11 +1,6 @@
 # Echo API
 
 
-## How to run
-`$ java -jar gravitee-echo-api-VERSION.jar <port>`
-
-`port ` is optional. Default `8080`
-
 ## How to use
 
 `GET` Return headers as response content in JSON and que parameters list.
