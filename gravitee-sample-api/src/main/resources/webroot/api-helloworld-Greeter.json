@@ -1,0 +1,122 @@
+{
+  "name": "helloworld.Greeter",
+  "version": "1",
+  "description": "helloworld.Greeter",
+  "visibility": "PRIVATE",
+  "gravitee": "2.0.0",
+  "flow_mode": "DEFAULT",
+  "resources": [],
+  "properties": [],
+  "plans": [
+    {
+      "id": "81acec84-485f-407a-acec-84485fe07a1f",
+      "name": "Free",
+      "description": "Yeah",
+      "validation": "AUTO",
+      "security": "KEY_LESS",
+      "type": "API",
+      "status": "PUBLISHED",
+      "api": "0449ec23-4f52-45dd-89ec-234f5205dda7",
+      "order": 0,
+      "characteristics": [
+        "1"
+      ],
+      "created_at": 1656596651579,
+      "updated_at": 1656596651579,
+      "paths": {},
+      "flows": [
+        {
+          "name": "",
+          "path-operator": {
+            "path": "/",
+            "operator": "STARTS_WITH"
+          },
+          "condition": "",
+          "consumers": [],
+          "methods": [],
+          "pre": [],
+          "post": [],
+          "enabled": true
+        }
+      ],
+      "comment_required": false
+    }
+  ],
+  "id": "0449ec23-4f52-45dd-89ec-234f5205dda7",
+  "path_mappings": [],
+  "proxy": {
+    "virtual_hosts": [
+      {
+        "path": "/helloworld.Greeter"
+      }
+    ],
+    "strip_context_path": false,
+    "preserve_host": false,
+    "logging": {
+      "mode": "NONE",
+      "content": "NONE",
+      "scope": "NONE"
+    },
+    "groups": [
+      {
+        "name": "default-group",
+        "endpoints": [
+          {
+            "proxy": {
+              "type": "HTTP",
+              "useSystemProxy": false,
+              "enabled": false
+            },
+            "backup": false,
+            "inherit": false,
+            "name": "SSL",
+            "weight": 1,
+            "http": {
+              "keepAlive": true,
+              "followRedirects": false,
+              "readTimeout": 10000,
+              "idleTimeout": 60000,
+              "connectTimeout": 5000,
+              "maxConcurrentConnections": 100,
+              "useCompression": true,
+              "version": "HTTP_2",
+              "pipelining": false,
+              "clearTextUpgrade": true
+            },
+            "type": "grpc",
+            "ssl": {
+              "keyStore": {
+                "type": ""
+              },
+              "hostnameVerifier": false,
+              "trustStore": {
+                "type": ""
+              },
+              "trustAll": true
+            },
+            "target": "https://host.docker.internal/helloworld.Greeter"
+          }
+        ],
+        "load_balancing": {
+          "type": "ROUND_ROBIN"
+        },
+        "http": {
+          "connectTimeout": 5000,
+          "idleTimeout": 60000,
+          "keepAlive": true,
+          "readTimeout": 10000,
+          "pipelining": false,
+          "maxConcurrentConnections": 100,
+          "useCompression": true,
+          "followRedirects": false
+        }
+      }
+    ]
+  },
+  "response_templates": {},
+  "primaryOwner": {
+    "id": "52861864-7aa6-43f2-8618-647aa633f29f",
+    "displayName": "admin",
+    "type": "USER"
+  }
+}
