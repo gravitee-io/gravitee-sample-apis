@@ -26,6 +26,7 @@ import io.vertx.ext.web.RoutingContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author Nicolas GERAUD (nicolas at graviteesource.com)
@@ -50,59 +51,58 @@ public class EchoHandler implements Handler<RoutingContext> {
         if (request.getParam("statusMessage") != null) {
             statusMessage = request.getParam("statusMessage");
         }
-        if (HttpMethod.GET.equals(request.method())) {
-            JsonObject content = new JsonObject();
 
-            //headers
-            JsonObject headers = new JsonObject();
-            request
-                .headers()
-                .entries()
-                .forEach(entry -> {
-                    String value = entry.getValue();
-                    if (headers.containsKey(entry.getKey())) {
-                        value = String.join(",", String.valueOf(headers.getValue(entry.getKey())), value);
-                    }
-                    headers.put(entry.getKey(), value);
-                });
+        final AtomicLong bodySize = new AtomicLong(0);
+        final JsonObject content = jsonEchoResponse(request);
+        final int finalStatusCode = statusCode;
+        final String finalStatusMessage = statusMessage;
 
-            content.put("headers", headers);
-
-            //query params
-            JsonObject queryParams = new JsonObject();
-            for (Map.Entry<String, String> entry : request.params().entries()) {
-                if (queryParams.containsKey(entry.getKey())) {
-                    if (queryParams.getValue(entry.getKey()) instanceof String) {
-                        //transform String to List
-                        List<Object> values = new ArrayList<>();
-                        values.add(queryParams.getValue(entry.getKey()));
-                        queryParams.put(entry.getKey(), values);
-                    }
-                    ((JsonArray) queryParams.getValue(entry.getKey())).add(entry.getValue());
-                } else {
-                    queryParams.put(entry.getKey(), entry.getValue());
-                }
-            }
-            content.put("query_params", queryParams);
-            //response
+        request.handler(event -> bodySize.addAndGet(event.length()));
+        request.endHandler(aVoid -> {
+            content.put("bodySize", bodySize.get());
             routingContext
                 .response()
                 .putHeader("content-type", "application/json")
-                .setStatusCode(statusCode)
-                .setStatusMessage(statusMessage)
+                .setStatusCode(finalStatusCode)
+                .setStatusMessage(finalStatusMessage)
                 .end(content.encodePrettily());
-        } else {
-            response.setStatusCode(statusCode).setStatusMessage(statusMessage);
+        });
+    }
 
-            request
-                .headers()
-                .entries()
-                .stream()
-                .filter(entry -> !"host".equalsIgnoreCase(entry.getKey()))
-                .forEach(entry -> response.putHeader(entry.getKey(), entry.getValue()));
+    private JsonObject jsonEchoResponse(HttpServerRequest request) {
+        JsonObject content = new JsonObject();
 
-            request.handler(response::write);
-            request.endHandler(aVoid -> response.end());
+        //headers
+        JsonObject headers = new JsonObject();
+        request
+            .headers()
+            .entries()
+            .forEach(entry -> {
+                String value = entry.getValue();
+                if (headers.containsKey(entry.getKey())) {
+                    value = String.join(",", String.valueOf(headers.getValue(entry.getKey())), value);
+                }
+                headers.put(entry.getKey(), value);
+            });
+
+        content.put("headers", headers);
+
+        //query params
+        JsonObject queryParams = new JsonObject();
+        for (Map.Entry<String, String> entry : request.params().entries()) {
+            if (queryParams.containsKey(entry.getKey())) {
+                if (queryParams.getValue(entry.getKey()) instanceof String) {
+                    //transform String to List
+                    List<Object> values = new ArrayList<>();
+                    values.add(queryParams.getValue(entry.getKey()));
+                    queryParams.put(entry.getKey(), values);
+                }
+                ((JsonArray) queryParams.getValue(entry.getKey())).add(entry.getValue());
+            } else {
+                queryParams.put(entry.getKey(), entry.getValue());
+            }
         }
+        content.put("query_params", queryParams);
+        return content;
     }
 }

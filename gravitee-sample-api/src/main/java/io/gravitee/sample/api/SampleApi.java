@@ -23,6 +23,7 @@ import io.gravitee.sample.api.whattimeisit.WhatTimeIsItHandler;
 import io.gravitee.sample.api.whoami.WhoAmIHandler;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;
+import io.vertx.core.http.HttpServerOptions;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.StaticHandler;
 
@@ -34,7 +35,9 @@ public class SampleApi {
 
     public static void main(String[] args) {
         Vertx vertx = Vertx.vertx();
-        HttpServer server = vertx.createHttpServer();
+        final HttpServerOptions httpServerOptions = new HttpServerOptions();
+        httpServerOptions.setCompressionSupported(true);
+        HttpServer server = vertx.createHttpServer(httpServerOptions);
         Router router = Router.router(vertx);
 
         router.route().handler(StaticHandler.create());
