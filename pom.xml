@@ -20,14 +20,14 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>io.gravitee</groupId>
         <artifactId>gravitee-parent</artifactId>
-        <version>19</version>
+        <version>20.5</version>
     </parent>
 
     <groupId>io.gravitee.sample.api</groupId>
+
     <artifactId>gravitee-sample-apis</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <name>Gravitee.io - Sample APIs</name>
@@ -40,6 +40,22 @@
         <module>gravitee-sample-api</module>
     </modules>
 
+    <properties>
+        <gravitee-bom.version>2.6</gravitee-bom.version>
+        <vertx.version>3.8.5</vertx.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.gravitee</groupId>
+                <artifactId>gravitee-bom</artifactId>
+                <version>${gravitee-bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency></dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>io.vertx</groupId>
@@ -50,13 +66,11 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-            <version>${jackson.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

@@ -42,7 +42,7 @@ public class SampleApi {
 
         router.route().handler(StaticHandler.create());
 
-        router.route("/echo").method(GET).method(POST).produces("application/json").handler(new EchoHandler());
+        router.route("/echo").produces("application/json").handler(new EchoHandler());
 
         router.route("/whoami").method(GET).produces("application/json").handler(new WhoAmIHandler());
 
