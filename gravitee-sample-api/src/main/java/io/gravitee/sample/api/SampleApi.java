@@ -18,6 +18,7 @@ package io.gravitee.sample.api;
 import static io.vertx.core.http.HttpMethod.GET;
 import static io.vertx.core.http.HttpMethod.POST;
 
+import io.gravitee.sample.api.ai.LlmHandler;
 import io.gravitee.sample.api.echo.EchoHandler;
 import io.gravitee.sample.api.whattimeisit.WhatTimeIsItHandler;
 import io.gravitee.sample.api.whoami.WhoAmIHandler;
@@ -47,6 +48,8 @@ public class SampleApi {
         router.route("/whoami").method(GET).produces("application/json").handler(new WhoAmIHandler());
 
         router.route("/whattimeisit").method(GET).produces("application/json").handler(new WhatTimeIsItHandler());
+
+        router.route("/ai/llm").method(GET).method(POST).produces("application/json").handler(new LlmHandler());
 
         int port = 8080;
         if (args.length > 0) {

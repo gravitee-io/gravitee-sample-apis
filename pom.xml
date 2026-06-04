@@ -37,6 +37,7 @@
         <module>gravitee-echo-api</module>
         <module>gravitee-whattimeisit-api</module>
         <module>gravitee-whoami-api</module>
+        <module>gravitee-ai-api</module>
         <module>gravitee-sample-api</module>
     </modules>
 
