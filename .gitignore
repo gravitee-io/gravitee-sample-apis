@@ -79,7 +79,6 @@ hs_err_pid*
 *.class
 
 # Generated files
-bin/
 gen/
 out/
 

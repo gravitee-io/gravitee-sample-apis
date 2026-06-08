@@ -37,7 +37,8 @@ public class EchoHandler implements Handler<RoutingContext> {
     @Override
     public void handle(final RoutingContext routingContext) {
         final HttpServerRequest request = routingContext.request();
-        final HttpServerResponse response = routingContext.response();
+        request.pause();
+
         int statusCode = HttpResponseStatus.OK.code();
         String statusMessage = HttpResponseStatus.OK.reasonPhrase();
         if (request.getParam("statusCode") != null) {
@@ -67,6 +68,8 @@ public class EchoHandler implements Handler<RoutingContext> {
                 .setStatusMessage(finalStatusMessage)
                 .end(content.encodePrettily());
         });
+
+        request.resume();
     }
 
     private JsonObject jsonEchoResponse(HttpServerRequest request) {
